@@ -52,3 +52,17 @@ const host = process.env.HOST || "127.0.0.1"
 app.listen(port, () => {
   console.log(`app listening on http://${host}:${port}`)
 })
+
+
+/**
+ * Routes
+ */
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src/views/home.html'));
+});
+app.get('/about', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src/views/about.html'));
+});
+app.get('/products', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src/views/products.html'));
+});
