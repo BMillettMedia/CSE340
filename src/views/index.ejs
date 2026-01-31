@@ -1,0 +1,14 @@
+<h1>Course Catalog</h1>
+
+<ul>
+  <% courses.forEach(course => { %>
+    <li>
+      <h3><%= course.name %></h3>
+      <p><%= course.description %></p>
+    </li>
+  <% }) %>
+</ul>
+
+<p>
+  <a href="/faculty">View Faculty Directory</a>
+</p>

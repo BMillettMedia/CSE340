@@ -14,9 +14,10 @@
  *************************/
 const express = require("express")
 const expressLayouts = require("express-ejs-layouts")
-const env = require("dotenv").config()
+require("dotenv").config()
+const routes = require("./src/routes")
+
 const app = express()
-const static = require("./routes/static")
 
 /* ***********************
  * View Engine and Templates
@@ -26,43 +27,36 @@ app.use(expressLayouts)
 app.set("layout", "./layouts/layout") // not at views root
 
 /* ***********************
- * Routes
+ * Middleware
  *************************/
-app.use(static)
-
-// Root route (basic example — kept simple so EJS can take over later)
-app.get("/", (req, res) => {
-  res.send("Hello, World!")
-})
-
-app.get('/', (req, res)=> {
-  res.send('Hello, ${name}!');
-});
+app.use(express.static("public"))
+app.use(express.urlencoded({ extended: true }))
 
 /* ***********************
- * Local Server Information
- * Values from .env (environment) file
+ * Routes
  *************************/
-const port = process.env.PORT || 5500
+app.use("/", routes)
+
+/* ***********************
+ * Error Handling
+ *************************/
+app.use((err, req, res, next) => {
+  res.status(err.status || 500)
+  res.render("errors/error", {
+    title: "Error",
+    message: err.message,
+  })
+})
+
+/* ***********************
+ * Server Information
+ *************************/
+const port = process.env.PORT || 3000
 const host = process.env.HOST || "127.0.0.1"
 
 /* ***********************
  * Log statement to confirm server operation
  *************************/
 app.listen(port, () => {
-  console.log(`app listening on http://${host}:${port}`)
+  console.log(`Server running at http://${host}:${port}`)
 })
-
-
-/**
- * Routes
- */
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src/views/home.html'));
-});
-app.get('/about', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src/views/about.html'));
-});
-app.get('/products', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src/views/products.html'));
-});
