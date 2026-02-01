@@ -42,7 +42,7 @@ app.use("/", routes)
  *************************/
 app.use((err, req, res, next) => {
   res.status(err.status || 500)
-  res.render("errors/error", {
+  res.render("src/views/errors/error", {
     title: "Error",
     message: err.message,
   })
