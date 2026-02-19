@@ -2,7 +2,8 @@
 
 <p><%= message %></p>
 
-<p>
-  <a href="/">Return to Home</a> |
-  <a href="/faculty">Faculty Directory</a>
-</p>
+<% if (error && error.stack) { %>
+  <pre><%= error.stack %></pre>
+<% } %>
+
+<a href="/">Return Home</a>

@@ -1,62 +1,67 @@
-//start server from terminal
-//pnpm run start
-
-//start server in development from terminal
-//pnpm run dev
-
 /* ******************************************
- * This server.js file is the primary file of the 
- * application. It is used to control the project.
- *******************************************/
+ * server.js
+ ******************************************/
 
-/* ***********************
- * Require Statements
- *************************/
 const express = require("express")
 const expressLayouts = require("express-ejs-layouts")
 require("dotenv").config()
+const path = require("path")
+
 const routes = require("./src/routes")
 
 const app = express()
 
 /* ***********************
- * View Engine and Templates
+ * View Engine Setup
  *************************/
+
 app.set("view engine", "ejs")
+
+// IMPORTANT: tell Express where views are located
+app.set("views", path.join(__dirname, "src", "views"))
+
 app.use(expressLayouts)
-app.set("layout", "./layouts/layout") // not at views root
+
+// layout file WITHOUT extension and WITHOUT views/
+app.set("layout", "layouts/layout")
 
 /* ***********************
  * Middleware
  *************************/
+
 app.use(express.static("public"))
 app.use(express.urlencoded({ extended: true }))
 
 /* ***********************
  * Routes
  *************************/
+
 app.use("/", routes)
 
 /* ***********************
- * Error Handling
+ * Error Handler
  *************************/
+
 app.use((err, req, res, next) => {
+  console.error(err.stack)
+
   res.status(err.status || 500)
-  res.render("src/views/errors/error", {
-    title: "Error",
+
+  // FIXED: remove "views/"
+  res.render("errors/error", {
+    title: "Server Error",
     message: err.message,
+    error: process.env.NODE_ENV === "development" ? err : {}
   })
 })
 
 /* ***********************
- * Server Information
+ * Server
  *************************/
-const port = process.env.PORT || 3000
-const host = process.env.HOST || "127.0.0.1"
 
-/* ***********************
- * Log statement to confirm server operation
- *************************/
+const port = process.env.PORT || 5500
+const host = process.env.HOST || "localhost"
+
 app.listen(port, () => {
   console.log(`Server running at http://${host}:${port}`)
 })
